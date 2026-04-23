@@ -1,3 +1,6 @@
+## Canary Channel
+
+This is the **canary** channel. It is **highly unstable** and intended **only for testing**, but receives updates more frequently.
 ## RTL8821CU Driver for Linux (KDE, Kubuntu, latest Kernel)
 
 This fork is **actively maintained** and currently under active development.
