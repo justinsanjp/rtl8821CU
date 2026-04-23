@@ -50,6 +50,7 @@
 #include <linux/rtnetlink.h>
 #include <linux/delay.h>
 #include <linux/interrupt.h>	/* for struct tasklet_struct */
+#include <linux/timer.h>
 #include <linux/ip.h>
 #include <linux/kthread.h>
 #include <linux/list.h>
@@ -78,6 +79,16 @@
 
 /* Monitor mode */
 #include <net/ieee80211_radiotap.h>
+
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 17, 0))
+	#define rtw_from_timer(var, callback_timer, timer_fieldname) \
+		timer_container_of(var, callback_timer, timer_fieldname)
+	#define rtw_del_timer_sync timer_delete_sync
+#else
+	#define rtw_from_timer(var, callback_timer, timer_fieldname) \
+		from_timer(var, callback_timer, timer_fieldname)
+	#define rtw_del_timer_sync del_timer_sync
+#endif
 
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 24))
 	#include <linux/ieee80211.h>
@@ -356,7 +367,7 @@ static inline void timer_hdl(unsigned long cntx)
 #endif
 {
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(4, 14, 0))
-	_timer *ptimer = from_timer(ptimer, in_timer, timer);
+	_timer *ptimer = rtw_from_timer(ptimer, in_timer, timer);
 #else
 	_timer *ptimer = (_timer *)cntx;
 #endif
@@ -385,7 +396,7 @@ __inline static void _set_timer(_timer *ptimer, u32 delay_time)
 
 __inline static void _cancel_timer(_timer *ptimer, u8 *bcancelled)
 {
-	*bcancelled = del_timer_sync(&ptimer->timer) == 1 ? 1 : 0;
+	*bcancelled = rtw_del_timer_sync(&ptimer->timer) == 1 ? 1 : 0;
 }
 
 static inline void _init_workitem(_workitem *pwork, void *pfunc, void *cntx)
