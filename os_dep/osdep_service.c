@@ -17,6 +17,7 @@
 #define _OSDEP_SERVICE_C_
 
 #include <drv_types.h>
+#include <linux/random.h>
 
 #define RT_TAG	'1178'
 
@@ -2614,7 +2615,9 @@ u64 rtw_division64(u64 x, u64 y)
 inline u32 rtw_random32(void)
 {
 #ifdef PLATFORM_LINUX
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3, 8, 0))
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 17, 0))
+	return get_random_u32();
+#elif (LINUX_VERSION_CODE >= KERNEL_VERSION(3, 8, 0))
 	return prandom_u32();
 #elif (LINUX_VERSION_CODE <= KERNEL_VERSION(2, 6, 18))
 	u32 random_int;
@@ -3152,4 +3155,3 @@ int hexstr2bin(const char *hex, u8 *buf, size_t len)
 	}
 	return 0;
 }
-

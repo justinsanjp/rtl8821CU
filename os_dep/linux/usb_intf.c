@@ -84,6 +84,13 @@ static void rtw_dev_shutdown(struct device *dev)
 	}
 }
 
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 17, 0))
+static void rtw_usb_shutdown(struct usb_interface *intf)
+{
+	rtw_dev_shutdown(&intf->dev);
+}
+#endif
+
 #if (LINUX_VERSION_CODE <= KERNEL_VERSION(2, 6, 23))
 /* Some useful macros to use to create struct usb_device_id */
 #define USB_DEVICE_ID_MATCH_VENDOR			 0x0001
@@ -281,7 +288,9 @@ struct rtw_usb_drv usb_drv = {
 	.usbdrv.supports_autosuspend = 1,
 #endif
 
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 19))
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 17, 0))
+	.usbdrv.shutdown = rtw_usb_shutdown,
+#elif (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 19))
 	.usbdrv.drvwrap.driver.shutdown = rtw_dev_shutdown,
 #else
 	.usbdrv.driver.shutdown = rtw_dev_shutdown,
