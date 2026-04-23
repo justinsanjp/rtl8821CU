@@ -1,3 +1,16 @@
+## Experimental Channel
+
+This is the **experimental** channel.  
+Here, we actively optimize the driver and push performance as close to the theoretical limits as possible, without intentionally introducing harmful regressions.  
+Use this channel if you:
+
+- are comfortable with **heavy testing and debugging**,  
+- want to **maximize speed and stability** under extreme conditions,  
+- and do **not** rely on the system for production use.
+
+This branch may receive frequent, disruptive changes and is **not recommended for daily use**.
+
+
 ## RTL8821CU Driver for Linux (KDE, Kubuntu, latest Kernel)
 
 This fork is **actively maintained** and currently under active development.
